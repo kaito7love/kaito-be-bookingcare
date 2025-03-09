@@ -37,7 +37,85 @@ let postClinicDescription = (data) => {
         }
     })
 }
+let getAllClinic = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            let specialty = await db.Clinic.findAll();
+            resolve({
+                errCode: 0,
+                message: "Get all specialty successful",
+                data: specialty
+            })
+        } catch (error) {
+            console.log(error);
+            reject(error)
+        }
+    })
+}
+
+let getDetailClinicById = (clinicId, location) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!clinicId || !location) {
+                reject({
+                    errCode: -1,
+                    message: "Missing parameter",
+                });
+            } else {
+                let data = {};
+
+                data = await db.Clinic.findOne({
+                    where: {
+                        id: clinicId
+                    },
+                    attributes: ['descriptionMarkdown', 'descriptionHTML'],
+                })
+
+                if (data) {
+                    let doctorSpecialty = {};
+                    if (location == 'all') {
+                        doctorSpecialty = await db.Doctor_info.findAll({
+                            where: {
+                                clinicId: clinicId,
+                            },
+                            attributes: ['doctorId', 'provinceId'],
+                        })
+                    } else {
+                        // find by location
+                        doctorSpecialty = await db.Doctor_info.findAll({
+                            where: {
+                                clinicId: clinicId,
+                                provinceId: location
+                            },
+                            attributes: ['doctorId', 'provinceId'],
+                        })
+                    }
+
+                    data.doctor = doctorSpecialty;
+                }
+
+                resolve({
+                    errCode: 0,
+                    message: "Get Data Specialty Successful!",
+                    data: data || {}
+                })
+
+
+
+            }
+        } catch (error) {
+            console.log(error);
+            reject({
+                errCode: -1,
+                message: "Error get detail specialty",
+            });
+        }
+    })
+}
 export default {
     postClinicDescription,
+    getAllClinic,
+    getDetailClinicById,
 
 }

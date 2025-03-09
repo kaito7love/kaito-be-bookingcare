@@ -89,7 +89,7 @@ let getDetailSpecialtyById = (specialtyId, location) => {
                         })
                     }
 
-                    data.doctorSpecialty = doctorSpecialty;
+                    data.doctor = doctorSpecialty;
                 }
 
                 resolve({

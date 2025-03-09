@@ -102,8 +102,6 @@ let postInfoDoctor = (data) => {
         try {
 
             let checkInput = requiredFields(data)
-
-
             if (!checkInput.isValid) {
                 resolve({
                     errCode: 1,
@@ -163,8 +161,8 @@ let postInfoDoctor = (data) => {
                             nameClinic: data.nameClinic,
                             addressClinic: data.addressClinic,
                             note: data.note,
-                            clinicId: data.clinicId,
-                            specialtyId: data.specialtyId,
+                            clinicId: data.selectedClinic,
+                            specialtyId: data.selectedSpecialty,
                         },
                         {
                             where: { doctorId: data.doctorId },
