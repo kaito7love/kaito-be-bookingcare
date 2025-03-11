@@ -112,9 +112,38 @@ let getProfileDoctorById = async (req, res) => {
 };
 let getListPatientForDoctor = async (req, res) => {
     try {
-        // console.log(req.query.doctorId, req.query.date);
+        console.log(req.query.doctorId, req.query.date);
 
         let message = await doctorService.getListPatientForDoctor(req.query.doctorId, req.query.date);
+
+        return res.status(200).json(message);
+    } catch (error) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: " Error from Server",
+        });
+    }
+};
+let sendBill = async (req, res) => {
+    try {
+        // console.log(req.body);
+
+        let message = await doctorService.sendBill(req.body);
+
+        return res.status(200).json(message);
+    } catch (error) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: " Error from Server",
+        });
+    }
+};
+
+let cancelBooking = async (req, res) => {
+    try {
+        // console.log(req.body);
+
+        let message = await doctorService.cancelBooking(req.body);
 
         return res.status(200).json(message);
     } catch (error) {
@@ -136,4 +165,6 @@ export default {
     getExtraInfoDoctorById,
     getProfileDoctorById,
     getListPatientForDoctor,
+    sendBill,
+    cancelBooking,
 };

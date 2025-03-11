@@ -1,7 +1,8 @@
-import { where } from "sequelize";
+import { where, Op } from "sequelize";
 import db from "../models";
 import _, { includes, reject } from "lodash";
 import { raw } from "body-parser";
+import emailService from "./emailService";
 require("dotenv").config();
 
 const MAX_NUMBER_SCHEDULE = process.env.MAX_NUMBER_SCHEDULE;
@@ -463,18 +464,20 @@ let getListPatientForDoctor = (doctorId, date) => {
                 });
             } else {
                 let dataSchedule = await db.Booking.findAll({
-                    where: { statusId: "S2", doctorId: doctorId, date: date },
+                    where: { statusId: { [Op.ne]: "S1" }, doctorId: doctorId, date: date },
                     include: [
                         {
                             model: db.User, as: 'patientData',
-                            attributes: ['email', 'firstName', 'address', 'gender'],
+                            attributes: ['email', 'firstName', 'address', 'gender', 'phone'],
                             include: [{
-                                model: db.Allcode, as: 'genderData', attributes: ['value_en', 'value_vi']
+                                model: db.Allcode, as: 'genderData', attributes: ['value_en', 'value_vi'],
                             },
                             ]
 
                         }, {
-                            model: db.Allcode, as: 'timeTypeDataPatient', attributes: ['value_en', 'value_vi']
+                            model: db.Allcode, as: 'timeTypeDataPatient', attributes: ['value_en', 'value_vi'],
+                        }, {
+                            model: db.Allcode, as: 'statusDataPatient', attributes: ['value_en', 'value_vi'],
                         }
                     ],
                     raw: true,
@@ -500,6 +503,113 @@ let getListPatientForDoctor = (doctorId, date) => {
     })
 }
 
+let sendBill = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            console.log("check data to send remedy", data);
+
+            if (!data) {
+                resolve({
+                    errCode: 1,
+                    message: "Missing required param!",
+                });
+            } else {
+                // 
+                let doctorId = data.data.doctorId
+                let date = data.data.date
+                let patientId = data.data.patientId
+                let dataSchedule = await db.Booking.findOne({
+                    where: { statusId: { [Op.ne]: "S1" }, doctorId: doctorId, date: date, patientId: patientId },
+                    raw: false,
+                    include: [
+                        {
+                            model: db.User, as: 'patientData',
+                            attributes: ['firstName', 'email'],
+                        }
+                    ],
+                });
+
+                if (dataSchedule) {
+                    dataSchedule.statusId = "S2"
+                    await dataSchedule.save();
+                }
+                console.log(dataSchedule);
+                await emailService.sendBill({
+                    receiverEmail: data.data.email,
+                    img: data.data.img,
+                    patientName: dataSchedule.patientData.firstName,
+                    language: data.language,
+                    imagePath: data.language,
+                })
+
+
+
+
+
+                // dataSchedule = await getListPatientForDoctor(doctorId, date);
+
+                resolve({
+                    errCode: 0,
+                    message: "Fetch Data  Successful!",
+                    data: dataSchedule || []
+                })
+
+            }
+        } catch (error) {
+            console.log(error);
+            reject({
+                errCode: -1,
+                message: "Error get detail",
+            });
+        }
+    })
+}
+
+
+let cancelBooking = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            console.log("check data to cancel booking", data);
+
+            if (!data) {
+                resolve({
+                    errCode: 1,
+                    message: "Missing required param!",
+                });
+            } else {
+                // // 
+                let doctorId = data.data.doctorId
+                let date = data.data.date
+                let patientId = data.data.patientId
+                let dataSchedule = await db.Booking.findOne({
+                    where: { statusId: { [Op.ne]: "S1" }, doctorId: doctorId, date: date, patientId: patientId },
+                    raw: false,
+                });
+
+                if (dataSchedule) {
+                    dataSchedule.statusId = "S4"
+                    await dataSchedule.save();
+                }
+                console.log(dataSchedule);
+                dataSchedule = await getListPatientForDoctor(doctorId, date);
+
+                resolve({
+                    errCode: 0,
+                    message: "Fetch Data  Successful!",
+                    data: dataSchedule || []
+                })
+
+            }
+        } catch (error) {
+            console.log(error);
+            reject({
+                errCode: -1,
+                message: "Error get detail",
+            });
+        }
+    })
+}
+
 
 export default {
     getTopDoctor,
@@ -511,4 +621,6 @@ export default {
     getExtraInfoDoctorById,
     getProfileDoctorById,
     getListPatientForDoctor,
+    sendBill,
+    cancelBooking,
 };

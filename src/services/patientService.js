@@ -29,7 +29,7 @@ let postBookingAppointment = (data) => {
                     },
                     raw: false
                 });
-                if (scheduleDoctor && scheduleDoctor.currentNumber < 3) {
+                if (scheduleDoctor && scheduleDoctor.currentNumber <= 3) {
                     scheduleDoctor.currentNumber += 1;
                     await scheduleDoctor.save();
 
@@ -60,6 +60,7 @@ let postBookingAppointment = (data) => {
                         roleId: "R3",
                         gender: data.gender,
                         address: data.address,
+                        phone: data.phone,
                     }
                 });
 
