@@ -530,27 +530,24 @@ let sendBill = (data) => {
                 });
 
                 if (dataSchedule) {
-                    dataSchedule.statusId = "S2"
+                    dataSchedule.statusId = "S3"
                     await dataSchedule.save();
                 }
                 console.log(dataSchedule);
+                // send email
                 await emailService.sendBill({
                     receiverEmail: data.data.email,
                     img: data.data.img,
                     patientName: dataSchedule.patientData.firstName,
                     language: data.language,
-                    imagePath: data.language,
+                    // imagePath: data.language,
                 })
 
-
-
-
-
-                // dataSchedule = await getListPatientForDoctor(doctorId, date);
+                dataSchedule = await getListPatientForDoctor(doctorId, date);
 
                 resolve({
                     errCode: 0,
-                    message: "Fetch Data  Successful!",
+                    message: "Fetch Data Successful!",
                     data: dataSchedule || []
                 })
 
