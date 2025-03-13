@@ -3,7 +3,7 @@ import specialtyService from "../services/specialtyService";
 
 let postSpecialtyDescription = async (req, res) => {
     try {
-        console.log(req.body);
+        // console.log(req.body);
 
 
         let message = await specialtyService.postSpecialtyDescription(req.body);
@@ -18,7 +18,7 @@ let postSpecialtyDescription = async (req, res) => {
 }
 let getAllSpecialty = async (req, res) => {
     try {
-        console.log(req.body);
+        // console.log(req.body);
 
 
         let message = await specialtyService.getAllSpecialty();

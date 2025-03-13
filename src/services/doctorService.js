@@ -80,8 +80,8 @@ let requiredFields = (data) => {
         'selectedProvince',
         'nameClinic',
         'addressClinic',
-        'clinicId',
-        'specialtyId',
+        'selectedClinic',
+        'selectedSpecialty',
     ];
     let isValid = true;
     let element = "";
@@ -236,7 +236,7 @@ let getDetailDoctorById = (id) => {
                     raw: false,
                     // nest: true,
                 });
-                // console.log("from service", data);
+                // console.log("data doctor from be ser", data);
                 if (data) {
                     resolve({
                         errCode: 0,
@@ -516,7 +516,7 @@ let sendBill = (data) => {
             } else {
                 // 
                 let doctorId = data.data.doctorId
-                let date = data.data.date
+                let date = data.data.date.toString();
                 let patientId = data.data.patientId
                 let dataSchedule = await db.Booking.findOne({
                     where: { statusId: { [Op.ne]: "S1" }, doctorId: doctorId, date: date, patientId: patientId },
@@ -576,7 +576,7 @@ let cancelBooking = (data) => {
             } else {
                 // // 
                 let doctorId = data.data.doctorId
-                let date = data.data.date
+                let date = data.data.date.toString();
                 let patientId = data.data.patientId
                 let dataSchedule = await db.Booking.findOne({
                     where: { statusId: { [Op.ne]: "S1" }, doctorId: doctorId, date: date, patientId: patientId },

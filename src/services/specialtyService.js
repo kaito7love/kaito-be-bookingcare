@@ -60,17 +60,20 @@ let getDetailSpecialtyById = (specialtyId, location) => {
                     message: "Missing parameter",
                 });
             } else {
-                let data = {};
+                let result = {};
 
-                data = await db.Specialty.findOne({
+
+                let detail = await db.Specialty.findOne({
                     where: {
                         id: specialtyId
                     },
                     attributes: ['descriptionMarkdown', 'descriptionHTML'],
                 })
 
-                if (data) {
-                    let doctorSpecialty = {};
+                let doctorSpecialty = {};
+
+                if (detail) {
+
                     if (location == 'all') {
                         doctorSpecialty = await db.Doctor_info.findAll({
                             where: {
@@ -89,13 +92,16 @@ let getDetailSpecialtyById = (specialtyId, location) => {
                         })
                     }
 
-                    data.doctor = doctorSpecialty;
-                }
 
+                    // data.doctor = doctorSpecialty;
+                    // console.log("check location from be", data.doctor);
+                }
+                result.detail = detail;
+                result.doctor = doctorSpecialty
                 resolve({
                     errCode: 0,
                     message: "Get Data Specialty Successful!",
-                    data: data || {}
+                    data: result || {}
                 })
 
 

@@ -204,19 +204,21 @@ let getAllCodeService = (typeInput) => {
     return new Promise(async (resolve, reject) => {
         try {
             let message = {}
-            if (!typeInput) {
-                // let allCodeData = await db.Allcode.findAll();
-                // message.errCode = 0;
-                // message.errMessage = "Get successful allcode data";
-                // message.data = allCodeData;
+            if (!typeInput) {              
+               
                 return res.status(200).json({
                     errCode: -1,
                     errMessage: "Missing Type Input"
                 })
             } else {
+                // console.log("type input ", typeInput);
+                
                 let allCodeData = await db.Allcode.findAll({
                     where: { type: typeInput }
                 });
+
+                // console.log("type input by", allCodeData);
+
                 message.errCode = 0;
                 message.errMessage = "Get successful allcode data";
                 message.data = allCodeData;

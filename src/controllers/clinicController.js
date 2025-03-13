@@ -5,7 +5,7 @@ let postClinicDescription = async (req, res) => {
 
 
         let message = await clinicService.postClinicDescription(req.body);
-        console.log(message);
+        // console.log(message);
         return res.status(200).json(message);
     } catch (error) {
         return res.status(200).json({

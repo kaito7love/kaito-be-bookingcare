@@ -1,11 +1,12 @@
 import { reject } from "lodash"
 import db from "../models";
+import { raw } from "body-parser";
 require('dotenv').config();
 
 let postClinicDescription = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log(data);
+            // console.log(data);
 
             if (!data.clinicName || !data.descriptionMarkdown || !data.descriptionHTML || !data.address) {
                 resolve({
@@ -63,17 +64,16 @@ let getDetailClinicById = (clinicId, location) => {
                     message: "Missing parameter",
                 });
             } else {
-                let data = {};
-
-                data = await db.Clinic.findOne({
+                let result = {};
+                let detail = await db.Clinic.findOne({
                     where: {
                         id: clinicId
                     },
                     attributes: ['descriptionMarkdown', 'descriptionHTML'],
                 })
+                let doctorSpecialty = {};
+                if (detail) {
 
-                if (data) {
-                    let doctorSpecialty = {};
                     if (location == 'all') {
                         doctorSpecialty = await db.Doctor_info.findAll({
                             where: {
@@ -92,13 +92,19 @@ let getDetailClinicById = (clinicId, location) => {
                         })
                     }
 
-                    data.doctor = doctorSpecialty;
+                    // detail.doctor = doctorSpecialty
+                    // console.log("check detail clinic from be", JSON.stringify(data.doctor, null, 2));
+                    // console.log("check detail clinic from be", data);
+
                 }
+                result.detail = detail;
+                result.doctor = doctorSpecialty
+                // console.log(result);
 
                 resolve({
                     errCode: 0,
                     message: "Get Data Specialty Successful!",
-                    data: data || {}
+                    data: result || {}
                 })
 
 
