@@ -29,8 +29,8 @@ let postBookingAppointment = (data) => {
                     },
                     raw: false
                 });
-                if (scheduleDoctor && scheduleDoctor.currentNumber <= 3) {
-                    scheduleDoctor.currentNumber += 1;
+                if (scheduleDoctor && scheduleDoctor.currentNumber < 3) {
+                    // scheduleDoctor.currentNumber += 1;
                     await scheduleDoctor.save();
 
                     console.log('Updated currentNumber:', scheduleDoctor.currentNumber);

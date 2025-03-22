@@ -278,8 +278,9 @@ let bulkCreateSchedule = (data) => {
                     });
                 }
                 //get all existing data
+                let date = data.formatedDate.toString()
                 let existing = await db.Schedule.findAll({
-                    where: { doctorId: data.doctorId, date: data.formatedDate },
+                    where: { doctorId: data.doctorId, date: date },
                     attributes: ["timeType", "date", "doctorId", "maxNumber"],
                 });
 
