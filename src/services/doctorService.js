@@ -455,7 +455,7 @@ let getProfileDoctorById = (doctorId) => {
 let getListPatientForDoctor = (doctorId, date) => {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log(doctorId, date);
+            // console.log(doctorId, date);
 
             if (!doctorId || !date) {
                 resolve({
@@ -533,7 +533,7 @@ let sendBill = (data) => {
                     dataSchedule.statusId = "S3"
                     await dataSchedule.save();
                 }
-                console.log(dataSchedule);
+                // console.log(dataSchedule);
                 // send email
                 await emailService.sendBill({
                     receiverEmail: data.data.email,
@@ -587,7 +587,7 @@ let cancelBooking = (data) => {
                     dataSchedule.statusId = "S4"
                     await dataSchedule.save();
                 }
-                console.log(dataSchedule);
+                // console.log(dataSchedule);
                 dataSchedule = await getListPatientForDoctor(doctorId, date);
 
                 resolve({

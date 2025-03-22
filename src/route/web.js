@@ -4,6 +4,7 @@ import doctorController from "../controllers/doctorController"
 import patientController from "../controllers/patientController"
 import specialtyController from "../controllers/specialtyController"
 import clinicController from "../controllers/clinicController"
+import paymentController from "../controllers/paymentController";
 
 let router = express.Router();
 
@@ -42,6 +43,10 @@ let initWebRoutes = (app) => {
     router.post("/api/post-specialty-description", specialtyController.postSpecialtyDescription);
     router.get("/api/get-specialty", specialtyController.getAllSpecialty);
     router.get("/api/get-detail-specialty", specialtyController.getDetailSpecialtyById);
+
+    router.post("/api/payments/create_momo_payment", paymentController.createMoMoPayment);
+    router.get("/api/payments/momo_return", paymentController.momoReturn);
+
 
     return app.use("/", router);
 };
